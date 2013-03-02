@@ -187,7 +187,7 @@ class Field:
     }
 
     def has_access_modifier(self, modifier):
-        return (self.flags[modifier] & access_flags) != 0
+        return (self.flags[modifier] & self.access_flags) != 0
 
 
 class Attribute:
