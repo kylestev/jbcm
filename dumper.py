@@ -1,4 +1,14 @@
-import sys
+from argparse import ArgumentParser
+from sys import exit
+
+"""
+Author:      Kyle Stevenson
+Date:        February 6th 2012
+Description: Used to take apart Java class files and parse the bytecode.
+             Not sure if this will be used to compile said bytecode back into
+             Java source or not but it will be a fun project none the less.
+"""
+
 
 class ConstantItem:
     name = None
@@ -10,6 +20,7 @@ class ConstantItem:
 
     def get_value(self):
         return self.value
+
 
 class ConstantItemUTF8String(ConstantItem):
     def __init__(self):
@@ -25,7 +36,8 @@ class ConstantItemUTF8String(ConstantItem):
         for b in self.value:
             w += b
 
-        return w 
+        return w
+
 
 class ConstantItemInteger(ConstantItem):
     def __init__(self):
@@ -35,6 +47,7 @@ class ConstantItemInteger(ConstantItem):
     def read_data(self, reader):
         self.value = reader.read_int()
 
+
 class ConstantItemFloat(ConstantItem):
     def __init__(self):
         self.name = 'Float'
@@ -42,6 +55,7 @@ class ConstantItemFloat(ConstantItem):
 
     def read_data(self, reader):
         self.value = reader.read_int()
+
 
 class ConstantItemLong(ConstantItem):
     def __init__(self):
@@ -51,6 +65,7 @@ class ConstantItemLong(ConstantItem):
     def read_data(self, reader):
         self.value = reader.read_long()
 
+
 class ConstantItemDouble(ConstantItem):
     def __init__(self):
         self.name = 'Double'
@@ -58,6 +73,7 @@ class ConstantItemDouble(ConstantItem):
 
     def read_data(self, reader):
         self.value = reader.read_long()
+
 
 class ConstantItemClassReference(ConstantItem):
     def __init__(self):
@@ -67,6 +83,7 @@ class ConstantItemClassReference(ConstantItem):
     def read_data(self, reader):
         self.value = reader.read_short()
 
+
 class ConstantItemStringReference(ConstantItem):
     def __init__(self):
         self.name = 'StringReference'
@@ -74,6 +91,7 @@ class ConstantItemStringReference(ConstantItem):
 
     def read_data(self, reader):
         self.value = reader.read_short()
+
 
 class ConstantItemFieldReference(ConstantItem):
     def __init__(self):
@@ -83,6 +101,7 @@ class ConstantItemFieldReference(ConstantItem):
     def read_data(self, reader):
         self.value = reader.read_int()
 
+
 class ConstantItemMethodReference(ConstantItem):
     def __init__(self):
         self.name = 'MethodReference'
@@ -90,6 +109,7 @@ class ConstantItemMethodReference(ConstantItem):
 
     def read_data(self, reader):
         self.value = reader.read_int()
+
 
 class ConstantItemInterfaceMethodReference(ConstantItem):
     def __init__(self):
@@ -99,6 +119,7 @@ class ConstantItemInterfaceMethodReference(ConstantItem):
     def read_data(self, reader):
         self.value = reader.read_int()
 
+
 class ConstantItemNameTypeDescriptor(ConstantItem):
     def __init__(self):
         self.name = 'NameTypeDescriptor'
@@ -107,23 +128,14 @@ class ConstantItemNameTypeDescriptor(ConstantItem):
     def read_data(self, reader):
         self.value = reader.read_int()
 
-class ConstantPool:
-    constant_types = {
-        1:  'UTF8 String',
-        3:  'Integer',
-        4:  'Float',
-        5:  'Long',
-        6:  'Double',
-        7:  'ClassReference',
-        8:  'StringReference',
-        9:  'FieldReference',
-        10: 'MethodReference',
-        11: 'InterfaceMethodReference',
-        12: 'NameTypeDescriptor'
-    }
 
+class ConstantPool:
     size = 0
     pool = None
+    constant_types = {1: 'UTF8 String', 3: 'Integer', 4: 'Float', 5: 'Long',
+                      6: 'Double', 7: 'ClassReference', 8: 'StringReference',
+                      9: 'FieldReference', 10: 'MethodReference',
+                      11: 'InterfaceMethodReference', 12: 'NameTypeDescriptor'}
 
     def __init__(self, size):
         self.size = size
@@ -135,6 +147,7 @@ class ConstantPool:
     def get(self, index):
         return self.pool[index]
 
+
 class Field:
     access_flags = 0
     name_index = 0
@@ -142,49 +155,46 @@ class Field:
     attributes_count = 0
     attributes = []
     flags = {
-        'public':    0x0001,
-        'private':   0x0002,
+        'public': 0x0001,
+        'private': 0x0002,
         'protected': 0x0004,
-        'static':    0x0008,
-        'final':     0x0010,
-        'volatile':  0x0040,
+        'static': 0x0008,
+        'final': 0x0010,
+        'volatile': 0x0040,
         'transient': 0x0080
     }
 
     def has_access_modifier(self, modifier):
         return (self.flags[modifier] & access_flags) != 0
 
+
 class Attribute:
     attribute_name_index = 0
     attribute_length = 0
 
+
 class AttributeConstantValue(Attribute):
     constantvalue_index = 0
+
 
 class AttributeSynthetic(Attribute):
     """"""
 
+
 class AttributeDeprepricated(Attribute):
     """"""
 
+
 class JavaClass:
+    constant_pool = None
     access_flags = 0
     superclass_name = ''
     class_name = ''
     fields = []
-    flags = {
-        'public':    0x0001,
-        'private':   0x0002,
-        'protected': 0x0004,
-        'static':    0x0008,
-        'final':     0x0010,
-        'volatile':  0x0040,
-        'transient': 0x0080
-    }
-    version = {
-        'major': 0,
-        'minor': 0
-    }
+    version = {'major': 0, 'minor': 0}
+    flags = {'public': 0x0001, 'private': 0x0002, 'protected': 0x0004,
+             'static': 0x0008, 'final': 0x0010, 'volatile': 0x0040,
+             'transient': 0x0080}
 
     def get_jdk_major_version(self):
         return self.version['major']
@@ -219,6 +229,13 @@ class JavaClass:
     def add_field(self, field):
         self.fields.append(field)
 
+    def get_constant_pool(self):
+        return self.constant_pool
+
+    def set_constant_pool(self, pool):
+        self.constant_pool = pool
+
+
 class ClassParser:
     jdk_versions = {
         51: 'JDK 7',
@@ -247,16 +264,28 @@ class ClassParser:
         print 'SDK Version:', self.jdk_versions[clazz.get_jdk_major_version()]
 
         pool = self.read_constant_pool(clazz)
+        clazz.set_constant_pool(pool)
 
         self.access_flags = self.reader.read_short()
 
-        clazz.set_access_flags(self.reader.read_short())
-        clazz.set_class_name(pool.get(self.reader.read_short()).get_value())
-        clazz.set_superclass_name(pool.get(self.reader.read_short()).get_value())
+        access_flags = self.reader.read_short()
+        clazz.set_access_flags(access_flags)
+
+        class_name = pool.get(self.reader.read_short()).get_value()
+        clazz.set_class_name(class_name)
+
+        superclass_name = pool.get(self.reader.read_short()).get_value()
+        clazz.set_superclass_name(superclass_name)
 
         self.read_interface_table(clazz)
 
-        self.read_fields(clazz, pool)
+        for i in range(pool.size):
+            item = pool.get(i)
+            print (i, item.name, item.get_value())
+
+        #self.read_fields(clazz, pool)
+
+        print self.reader.pos
 
     def read_constant_pool(self, clazz):
         pool = ConstantPool(self.reader.read_short())
@@ -289,17 +318,18 @@ class ClassParser:
             elif tag == 12:
                 item = ConstantItemNameTypeDescriptor()
 
-            if item != None:
+            if not item is None:
                 item.read_data(self.reader)
                 pool.add(item)
 
         return pool
 
     def read_interface_table(self, clazz):
-        size = self.reader.read_short()
+        size = self.reader.read_byte()
+        #size = self.reader.read_short()
 
         for i in range(size):
-            self.reader.read_short()
+            self.reader.read_byte()
 
         return None
 
@@ -307,6 +337,7 @@ class ClassParser:
         size = self.reader.read_short()
 
         for i in range(size):
+            print i
             field = Field()
             field.access_flags = self.reader.read_short()
             field.name_index = self.reader.read_short()
@@ -330,6 +361,7 @@ class ClassParser:
                 field.attributes.append(attr)
 
             clazz.add_field(clazz)
+
 
 class Reader:
     pos = -1
@@ -365,10 +397,16 @@ class Reader:
         with open(file, 'rb') as f:
             self.buff = f.read()
 
-def main():
-    if len(sys.argv) == 2:
-        parser = ClassParser(sys.argv[1])
-        parser.parse_class()
+
+def main(args):
+    if args.classfile is None:
+        return 'ERROR: Please pass in a classfile to parse via --classfile'
+
+    parser = ClassParser(args.classfile)
+    parser.parse_class()
 
 if __name__ == '__main__':
-    main()
+    arg_parser = ArgumentParser()
+    arg_parser.add_argument('-c', '--classfile')
+    args = arg_parser.parse_args()
+    exit(main(args))
