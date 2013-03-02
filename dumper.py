@@ -117,7 +117,7 @@ class ConstantItemInterfaceMethodReference(ConstantItem):
         self.tag_id = 11
 
     def read_data(self, reader):
-        self.value = reader.read_int()
+        self.value = {'name': reader.read_short(), 'type': reader.read_short()}
 
 
 class ConstantItemNameTypeDescriptor(ConstantItem):
