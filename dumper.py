@@ -279,8 +279,12 @@ class ClassParser:
 
         self.read_interface_table(clazz)
 
-        for i in range(pool.size):
+        for i in range(1, pool.size):
             item = pool.get(i)
+
+            if item is None:
+                continue
+
             print (i, item.name, item.get_value())
 
         #self.read_fields(clazz, pool)
@@ -289,9 +293,11 @@ class ClassParser:
 
     def read_constant_pool(self, clazz):
         pool = ConstantPool(self.reader.read_short())
+        print pool.size
+        pool.add(None)
 
         # Parse Constant Pool
-        for i in range(pool.size - 1):
+        for i in range(1, pool.size):
             item = None
             tag = self.reader.read_byte()
 
@@ -321,6 +327,9 @@ class ClassParser:
             if not item is None:
                 item.read_data(self.reader)
                 pool.add(item)
+
+                if tag in (5, 6):
+                    pool.add(None)
 
         return pool
 
