@@ -302,7 +302,7 @@ class ClassParser:
 
             print (i, item.name, item.get_value())
 
-        access_flags = pool.get(self.reader.read_short()).get_value()
+        access_flags = pool.get_value(self.reader.read_short())
         clazz.set_access_flags(access_flags)
 
         class_name = pool.get_value(self.reader.read_short())
@@ -377,9 +377,9 @@ class ClassParser:
             field = Field()
             field.access_flags = self.reader.read_short()
             field.name_index = self.reader.read_short()
-            field.name = pool.get(field.name_index).get_value()
+            field.name = pool.get_value(field.name_index)
             field.descriptor_index = self.reader.read_short()
-            field.descriptor = pool.get(field.descriptor_index).get_value()
+            field.descriptor = pool.get_value(field.descriptor_index)
             field.attributes_count = self.reader.read_short()
 
             for j in range(field.attributes_count):
