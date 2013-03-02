@@ -292,18 +292,15 @@ class ClassParser:
             if item is None:
                 continue
 
-            if item.tag_id in [7, 12]:
-                print pool.get_value(i)
-
             print (i, item.name, item.get_value())
 
-        access_flags = self.reader.read_short()
+        access_flags = pool.get(self.reader.read_short()).get_value()
         clazz.set_access_flags(access_flags)
 
-        class_name = pool.get(self.reader.read_short()).get_value()
+        class_name = pool.get_value(self.reader.read_short())
         clazz.set_class_name(class_name)
 
-        superclass_name = pool.get(self.reader.read_short()).get_value()
+        superclass_name = pool.get_value(self.reader.read_short())
         clazz.set_superclass_name(superclass_name)
 
         self.read_interface_table(clazz)
@@ -314,7 +311,6 @@ class ClassParser:
 
     def read_constant_pool(self, clazz):
         pool = ConstantPool(self.reader.read_short())
-        print pool.size
         pool.add(None)
 
         # Parse Constant Pool
@@ -351,6 +347,10 @@ class ClassParser:
 
                 if tag in (5, 6):
                     pool.add(None)
+            else:
+                print 'Tag %s not found for cp index %s' % (tag, i)
+                self.reader.pos -= 1
+                break
 
         return pool
 
