@@ -81,7 +81,7 @@ class ConstantItemClassReference(ConstantItem):
         self.tag_id = 7
 
     def read_data(self, reader):
-        self.value = reader.read_short()
+        self.value = {'type': reader.read_short()}
 
 
 class ConstantItemStringReference(ConstantItem):
@@ -90,7 +90,7 @@ class ConstantItemStringReference(ConstantItem):
         self.tag_id = 8
 
     def read_data(self, reader):
-        self.value = reader.read_short()
+        self.value = {'type': reader.read_short()}
 
 
 class ConstantItemFieldReference(ConstantItem):
@@ -99,7 +99,7 @@ class ConstantItemFieldReference(ConstantItem):
         self.tag_id = 9
 
     def read_data(self, reader):
-        self.value = reader.read_int()
+        self.value = {'name': reader.read_short(), 'type': reader.read_short()}
 
 
 class ConstantItemMethodReference(ConstantItem):
@@ -108,7 +108,7 @@ class ConstantItemMethodReference(ConstantItem):
         self.tag_id = 10
 
     def read_data(self, reader):
-        self.value = reader.read_int()
+        self.value = {'name': reader.read_short(), 'type': reader.read_short()}
 
 
 class ConstantItemInterfaceMethodReference(ConstantItem):
@@ -126,7 +126,7 @@ class ConstantItemNameTypeDescriptor(ConstantItem):
         self.tag_id = 12
 
     def read_data(self, reader):
-        self.value = reader.read_int()
+        self.value = {'name': reader.read_short(), 'type': reader.read_short()}
 
 
 class ConstantPool:
@@ -146,6 +146,15 @@ class ConstantPool:
 
     def get(self, index):
         return self.pool[index]
+
+    def get_value(self, index):
+        item = self.pool[index]
+
+        if item.tag_id == 7:
+            return self.get(item.value).get_value()
+        elif item.tag_id == 12:
+            return {'name': self.get(item.value['name']).get_value(),
+                    'type': self.get(item.value['type']).get_value()}
 
 
 class Field:
@@ -266,6 +275,17 @@ class ClassParser:
         pool = self.read_constant_pool(clazz)
         clazz.set_constant_pool(pool)
 
+        for i in range(1, pool.size):
+            item = pool.get(i)
+
+            if item is None:
+                continue
+
+            if item.tag_id in [7, 12]:
+                print pool.get_value(i)
+
+            print (i, item.name, item.get_value())
+
         access_flags = self.reader.read_short()
         clazz.set_access_flags(access_flags)
 
@@ -276,14 +296,6 @@ class ClassParser:
         clazz.set_superclass_name(superclass_name)
 
         self.read_interface_table(clazz)
-
-        for i in range(1, pool.size):
-            item = pool.get(i)
-
-            if item is None:
-                continue
-
-            print (i, item.name, item.get_value())
 
         #self.read_fields(clazz, pool)
 
