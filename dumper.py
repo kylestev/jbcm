@@ -162,10 +162,12 @@ class ConstantPool:
         item = self.pool[index]
 
         if item.tag_id == 7:
-            return self.get(item.value['type']).get_value()
+            return self.index[item.value['type']].get_value()
         elif item.tag_id == 12:
             return {'name': self.get(item.value['name']).get_value(),
                     'type': self.get(item.value['type']).get_value()}
+        else:
+            return self.pool[index].get_value()
 
 
 class Field:
