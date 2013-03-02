@@ -384,8 +384,7 @@ class ClassParser:
 
             for j in range(field.attributes_count):
                 name_index = self.reader.read_short()
-                attribute_length = self.reader.read_int()
-                
+
                 attribute_name = pool.get_value(name_index)
 
                 if attribute_name == 'ConstantValue':
@@ -405,7 +404,7 @@ class ClassParser:
                     attr = Attribute()
 
                 attr.name_index = name_index
-                attr.attribute_length = attribute_length
+                attr.attribute_length = self.reader.read_int()
                 self.reader.read(attr.attribute_length)
 
                 field.attributes.append(attr)
