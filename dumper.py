@@ -186,6 +186,10 @@ class Field:
         'transient': 0x0080
     }
 
+    def get_modifiers_list(self):
+        af = self.access_flags
+        return [f for f in self.flags if (af & self.flags[f]) != 0]
+
     def has_access_modifier(self, modifier):
         return (self.flags[modifier] & self.access_flags) != 0
 
