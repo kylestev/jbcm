@@ -305,7 +305,7 @@ class ClassParser:
 
         self.read_interface_table(clazz)
 
-        #self.read_fields(clazz, pool)
+        self.read_fields(clazz, pool)
 
         print self.reader.pos
 
@@ -366,7 +366,6 @@ class ClassParser:
         size = self.reader.read_short()
 
         for i in range(size):
-            print i
             field = Field()
             field.access_flags = self.reader.read_short()
             field.name_index = self.reader.read_short()
@@ -377,15 +376,16 @@ class ClassParser:
                 name_index = self.reader.read_short()
                 attribute_length = self.reader.read_short()
 
-                print pool.get(attr.name_index).get_value()
-
-                if pool.get(attr.name_index) == 'ConstantValue':
+                if pool.get(name_index).get_value() == 'ConstantValue':
                     attr = AttributeConstantValue()
                     attr.constantvalue_index = self.reader.read_short()
+                else:
+                    print pool.get(name_index).get_value()
+                    attr = Attribute()
 
                 attr.name_index = name_index
                 attr.attribute_length = attribute_length
-                self.reader.read(self.attribute_length)
+                self.reader.read(attr.attribute_length)
 
                 field.attributes.append(attr)
 
