@@ -266,8 +266,6 @@ class ClassParser:
         pool = self.read_constant_pool(clazz)
         clazz.set_constant_pool(pool)
 
-        self.access_flags = self.reader.read_short()
-
         access_flags = self.reader.read_short()
         clazz.set_access_flags(access_flags)
 
