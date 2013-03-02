@@ -1,5 +1,6 @@
 from argparse import ArgumentParser
 from sys import exit
+import decimal
 
 """
 Author:      Kyle Stevenson
@@ -54,7 +55,11 @@ class ConstantItemFloat(ConstantItem):
         self.tag_id = 4
 
     def read_data(self, reader):
-        self.value = reader.read_int()
+        d = reader.read_int()
+        e = (d >> 23) & 0xff
+        m = (d & 0x7fffff) << 1 if e == 0 else (d & 0x7fffff) | 0x800000
+        self.value = float((1 if d >> 31 == 0 else -1) * m *
+                           (2 ** (((d >> 23) & 0xff) - 150)))
 
 
 class ConstantItemLong(ConstantItem):
@@ -72,7 +77,13 @@ class ConstantItemDouble(ConstantItem):
         self.tag_id = 6
 
     def read_data(self, reader):
-        self.value = reader.read_long()
+        d = reader.read_long()
+        e = int((d >> 52) & 0x7ffL)
+        mask_d = d & 0xfffffffffffffL
+        o_mask = 0x10000000000000L
+
+        return Decimal((1 if d >> 63 == 0 else -1) * e *
+                       mask_d << 1 if e == 0 else mask_d | o_mask)
 
 
 class ConstantItemClassReference(ConstantItem):
