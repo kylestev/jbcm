@@ -171,7 +171,9 @@ class ConstantPool:
 class Field:
     access_flags = 0
     name_index = 0
+    name = None
     descriptor_index = 0
+    descriptor = None
     attributes_count = 0
     attributes = []
     flags = {
@@ -369,7 +371,9 @@ class ClassParser:
             field = Field()
             field.access_flags = self.reader.read_short()
             field.name_index = self.reader.read_short()
+            field.name = pool.get(field.name_index).get_value()
             field.descriptor_index = self.reader.read_short()
+            field.descriptor = pool.get(field.descriptor_index).get_value()
             field.attributes_count = self.reader.read_short()
 
             for j in range(field.attributes_count):
