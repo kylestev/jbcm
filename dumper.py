@@ -355,8 +355,7 @@ class ClassParser:
         return pool
 
     def read_interface_table(self, clazz):
-        size = self.reader.read_byte()
-        #size = self.reader.read_short()
+        size = self.reader.read_short()
 
         for i in range(size):
             self.reader.read_byte()
