@@ -220,9 +220,9 @@ class JavaClass:
     class_name = ''
     fields = []
     version = {'major': 0, 'minor': 0}
-    flags = {'public': 0x0001, 'private': 0x0002, 'protected': 0x0004,
-             'static': 0x0008, 'final': 0x0010, 'volatile': 0x0040,
-             'transient': 0x0080}
+    flags = {'public': 0x01, 'private': 0x02, 'protected': 0x04,
+             'static': 0x08, 'final': 0x10, 'volatile': 0x40,
+             'transient': 0x80}
 
     def get_jdk_major_version(self):
         return self.version['major']
