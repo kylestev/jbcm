@@ -330,6 +330,9 @@ class JavaClass:
     def set_constant_pool(self, pool):
         self.constant_pool = pool
 
+    def get_fields(self):
+        return self.fields
+
 
 class ClassParser:
     jdk_versions = {51: 'JDK 7', 50: 'JDK 6', 49: 'JDK 5', 48: 'JDK 1.4',
