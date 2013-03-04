@@ -539,26 +539,20 @@ class ClassParser:
             m.attributes_count = self.reader.read_short()
 
             for j in range(m.attributes_count):
-                name_index = self.reader.read_short()
-                attribute_name = pool.get_value(name_index)
+                attrs = Attribute.parse_attributes(self.reader, pool)
 
-                if attribute_name == 'ConstantValue':
+                if attrs['name'] == 'ConstantValue':
                     attr = AttributeConstantValue()
-                elif attribute_name == 'Synthetic':
+                elif attrs['name'] == 'Synthetic':
                     attr = AttributeSynthetic()
-                elif attribute_name == 'Deprecated':
+                elif attrs['name'] == 'Deprecated':
                     attr = AttributeDeprepricated()
-                elif attribute_name == 'Exceptions':
+                elif attrs['name'] == 'Exceptions':
                     attr = AttributeException()
+                else:
+                    attr = Attribute()
 
-                    attr.number_of_exceptions = self.reader.read_short()
-                    for k in range(attr.number_of_exceptions):
-                        exception_name_index = self.reader.read_short()
-                        exception = (exception_index_table,
-                                     pool.get_value(exception_index_table))
-
-                        attr.exception_index_table.append(exception)
-
+                attr.set_attributes(attrs)
                 attr.parse(self.reader, pool)
 
                 m.attributes.append(m)
