@@ -339,6 +339,15 @@ class AttributeException(TabledAttribute):
         return (index, pool.get_value(index))
 
 
+class TableLocalVariableTable(Table):
+    def parse_entry(self, reader):
+        ent = {'start_pc': reader.read_short(), 'length': reader.read_short(),
+               'name_index': reader.read_short(), 'index': reader.read_short(),
+               'descriptor_index': reader.read_short()}
+
+        return ent
+
+
 class TableLineNumberTable(Table):
     def parse_entry(self, reader):
         return {'start_pc': reader.read_short(),
