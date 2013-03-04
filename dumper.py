@@ -481,9 +481,6 @@ class Reader:
     def read_long(self):
         return (self.read_int() << 32) + self.read_int()
 
-    def read_hex(self, n):
-        return hex(n)[2:]
-
     def read(self, length):
         b = []
 
