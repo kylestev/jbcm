@@ -289,6 +289,17 @@ class AttributeDeprepricated(Attribute):
     """"""
 
 
+class AttributeException(Attribute):
+    max_stack = 0
+    max_locals = 0
+    code_length = 0
+    code = []
+    exception_table_length = 0
+    exception_table = []
+    attributes_count = 0
+    attributes = []
+
+
 class JavaClass:
     constant_pool = None
     access_flags = 0
@@ -498,6 +509,8 @@ class ClassParser:
                     attr = AttributeSynthetic()
                 elif attribute_name == 'Deprecated':
                     attr = AttributeDeprepricated()
+                elif attribute_name == 'Exceptions':
+                    attr = AttributeException()
 
                 m.attributes.append(m)
 
