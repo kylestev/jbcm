@@ -464,7 +464,7 @@ class ClassParser:
 
                 field.attributes.append(attr)
 
-            clazz.add_field(clazz)
+            clazz.add_field(field)
 
 
 class Reader:
