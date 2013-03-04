@@ -291,7 +291,7 @@ class Attribute:
         name_index = reader.read_short()
 
         return {'index': name_index, 'name': pool.get_value(name_index),
-                'length': reader.read_short()}
+                'length': reader.read_int()}
 
     def parse(self, reader, pool):
         reader.read(self.attribute_length)
