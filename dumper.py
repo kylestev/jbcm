@@ -339,6 +339,12 @@ class AttributeException(TabledAttribute):
         return (index, pool.get_value(index))
 
 
+class TableLineNumberTable(Table):
+    def parse_entry(self, reader):
+        return {'start_pc': reader.read_short(),
+                'line_number': reader.read_short()}
+
+
 class AttributeCode(Attribute):
     max_stack = 0
     max_locals = 0
