@@ -278,7 +278,7 @@ class Attribute:
     name = None
 
     @staticmethod
-    def parse_name(reader, pool):
+    def parse_attributes(reader, pool):
         name_index = reader.read_short()
 
         return {'index': name_index, 'name': pool.get_value(name_index),
@@ -511,7 +511,7 @@ class ClassParser:
             field.attributes_count = self.reader.read_short()
 
             for j in range(field.attributes_count):
-                attrs = Attribute.parse_name(self.reader, pool)
+                attrs = Attribute.parse_attributes(self.reader, pool)
 
                 if attrs['name'] == 'ConstantValue':
                     attr = AttributeConstantValue()
