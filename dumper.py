@@ -304,9 +304,6 @@ class AttributeDeprepricated(Attribute):
 
 
 class AttributeException(TabledAttribute):
-    number_of_exceptions = 0
-    exception_index_table = []
-
     def parse_entry(self, reader):
         index = reader.read_short()
         return (index, pool.get_value(index))
