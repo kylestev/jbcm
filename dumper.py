@@ -277,6 +277,12 @@ class Attribute:
     attribute_length = 0
     name = None
 
+    @staticmethod
+    def parse_name(reader, pool):
+        name_index = reader.read_short()
+
+        return {'index': name_index, 'name': pool.get_value(name_index)}
+
     def parse(self, reader, pool):
         """"""
 
