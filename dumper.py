@@ -277,7 +277,7 @@ class Attribute:
     attribute_length = 0
 
     def parse(self, reader, pool):
-        return None
+        """"""
 
 
 class TabledAttribute(Attribute):
