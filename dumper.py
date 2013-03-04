@@ -508,6 +508,14 @@ class ClassParser:
                 elif attribute_name == 'Exceptions':
                     attr = AttributeException()
 
+                    attr.number_of_exceptions = self.reader.read_short()
+                    for k in range(attr.number_of_exceptions):
+                        exception_name_index = self.reader.read_short()
+                        exception = (exception_index_table,
+                                     pool.get_value(exception_index_table))
+
+                        attr.exception_index_table.append(exception)
+
                 m.attributes.append(m)
 
             clazz.add_method(m)
