@@ -277,6 +277,20 @@ class Attribute:
     attribute_length = 0
 
 
+class TabledAttribute(Attribute):
+    length = 0
+    table = []
+
+    def parse_table(self, reader):
+        length = reader.read_short()
+
+        for i in range(length):
+            self.table.append(self.parse_entry(reader))
+
+    def parse_entry(self, reader):
+        return None
+
+
 class AttributeConstantValue(Attribute):
     constantvalue_index = 0
 
@@ -289,9 +303,13 @@ class AttributeDeprepricated(Attribute):
     """"""
 
 
-class AttributeException(Attribute):
+class AttributeException(TabledAttribute):
     number_of_exceptions = 0
     exception_index_table = []
+
+    def parse_entry(self, reader):
+        index = reader.read_short()
+        return exception = (index, pool.get_value(index))
 
 
 class AttributeCode(Attribute):
