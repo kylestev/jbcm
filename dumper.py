@@ -396,6 +396,8 @@ class ClassParser:
 
         self.read_fields(clazz, pool)
 
+        self.read_methods(clazz, pool)
+
         print self.reader.pos
 
     def read_constant_pool(self, clazz):
