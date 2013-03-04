@@ -239,6 +239,15 @@ class ConstantPool:
         else:
             return self.pool[index].get_value()
 
+    def print_pool(self):
+        for i in range(1, self.size):
+            item = self.get(i)
+
+            if item is None:
+                continue
+
+            print (i, item.name, self.get_value(i))
+
 
 class JavaClassMember:
     access_flags = 0
@@ -419,14 +428,6 @@ class ClassParser:
 
         pool = self.read_constant_pool(clazz)
         clazz.set_constant_pool(pool)
-
-        for i in range(1, pool.size):
-            item = pool.get(i)
-
-            if item is None:
-                continue
-
-            print (i, item.name, item.get_value())
 
         access_flags = pool.get_value(self.reader.read_short())
         clazz.set_access_flags(access_flags)
