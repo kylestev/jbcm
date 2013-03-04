@@ -275,6 +275,7 @@ class Method(JavaClassMember):
 class Attribute:
     name_index = 0
     attribute_length = 0
+    name = None
 
     def parse(self, reader, pool):
         """"""
