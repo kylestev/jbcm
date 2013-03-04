@@ -485,7 +485,6 @@ class ClassParser:
                 if tag in (5, 6):
                     pool.add(None)
             else:
-                print 'Tag %s not found for cp index %s' % (tag, i)
                 self.reader.pos -= 1
                 break
 
