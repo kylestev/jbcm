@@ -493,7 +493,7 @@ class ClassParser:
             m.name_index = self.reader.read_short()
             m.attributes_count = self.read_short()
 
-            for i in range(m.attributes_count):
+            for j in range(m.attributes_count):
                 name_index = self.reader.read_short()
                 attribute_name = pool.get_value(name_index)
 
