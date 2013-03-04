@@ -286,6 +286,10 @@ class Attribute:
     def parse(self, reader, pool):
         """"""
 
+    def set_name(self, name):
+        self.name_index = name['index']
+        self.name = name['name']
+
 
 class TabledAttribute(Attribute):
     length = 0
