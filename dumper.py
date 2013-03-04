@@ -507,13 +507,12 @@ class ClassParser:
 
             for j in range(field.attributes_count):
                 attrs = Attribute.parse_name(self.reader, pool)
-                attribute_name = attrs['name']
 
-                if attribute_name == 'ConstantValue':
+                if attrs['name'] == 'ConstantValue':
                     attr = AttributeConstantValue()
-                elif attribute_name == 'Synthetic':
+                elif attrs['name'] == 'Synthetic':
                     attr = AttributeSynthetic()
-                elif attribute_name == 'Deprecated':
+                elif attrs['name'] == 'Deprecated':
                     attr = AttributeDeprepricated()
                 else:
                     attr = Attribute()
