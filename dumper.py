@@ -281,7 +281,8 @@ class Attribute:
     def parse_name(reader, pool):
         name_index = reader.read_short()
 
-        return {'index': name_index, 'name': pool.get_value(name_index)}
+        return {'index': name_index, 'name': pool.get_value(name_index),
+                'length': reader.read_short()}
 
     def parse(self, reader, pool):
         """"""
@@ -289,6 +290,7 @@ class Attribute:
     def set_attributes(self, name):
         self.name_index = name['index']
         self.name = name['name']
+        self.attribute_length = name['length']
 
 
 class TabledAttribute(Attribute):
