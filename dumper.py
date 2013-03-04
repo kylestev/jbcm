@@ -286,7 +286,7 @@ class Attribute:
     def parse(self, reader, pool):
         """"""
 
-    def set_name(self, name):
+    def set_attributes(self, name):
         self.name_index = name['index']
         self.name = name['name']
 
@@ -518,7 +518,7 @@ class ClassParser:
                 else:
                     attr = Attribute()
 
-                attr.set_name(attrs)
+                attr.set_attributes(attrs)
                 self.reader.read(attr.attribute_length)
 
                 field.attributes.append(attr)
