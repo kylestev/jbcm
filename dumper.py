@@ -267,7 +267,9 @@ class Field(JavaClassMember):
 
 
 class Method(JavaClassMember):
-    """"""
+    flags = {'public': 0x01, 'private': 0x02, 'protected': 0x04,
+             'static': 0x08, 'final': 0x10, 'synchronized': 0x20,
+             'native': 0x0100, 'abstract': 0x0400, 'strict': 0x0800}
 
 
 class Attribute:
