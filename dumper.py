@@ -298,9 +298,9 @@ class TabledAttribute(Attribute):
     table = []
 
     def parse(self, reader, pool):
-        self.parse_table(reader)
+        self.parse_table(reader, pool)
 
-    def parse_table(self, reader):
+    def parse_table(self, reader, pool):
         table_length = reader.read_short()
 
         for i in range(table_length):
