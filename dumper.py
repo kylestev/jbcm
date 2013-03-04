@@ -249,6 +249,13 @@ class JavaClassMember:
     attributes_count = 0
     attributes = []
 
+    def get_modifiers_list(self):
+        af = self.access_flags
+        return [f for f in self.flags if (af & self.flags[f]) != 0]
+
+    def has_access_modifier(self, modifier):
+        return (self.flags[modifier] & self.access_flags) != 0
+
     def __str__(self):
         return self.name
 
@@ -257,13 +264,6 @@ class Field(JavaClassMember):
     flags = {'public': 0x01, 'private': 0x02, 'protected': 0x04,
              'static': 0x08, 'final': 0x10, 'volatile': 0x40,
              'transient': 0x80}
-
-    def get_modifiers_list(self):
-        af = self.access_flags
-        return [f for f in self.flags if (af & self.flags[f]) != 0]
-
-    def has_access_modifier(self, modifier):
-        return (self.flags[modifier] & self.access_flags) != 0
 
 
 class Method(JavaClassMember):
