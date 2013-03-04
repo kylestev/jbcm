@@ -396,13 +396,6 @@ class ClassParser:
                 else:
                     attr = Attribute()
 
-                if pool.get(name_index).get_value() == 'ConstantValue':
-                    attr = AttributeConstantValue()
-                    attr.constantvalue_index = self.reader.read_short()
-                else:
-                    print pool.get(name_index).get_value()
-                    attr = Attribute()
-
                 attr.name_index = name_index
                 attr.attribute_length = self.reader.read_int()
                 self.reader.read(attr.attribute_length)
