@@ -309,7 +309,7 @@ class AttributeException(TabledAttribute):
 
     def parse_entry(self, reader):
         index = reader.read_short()
-        return exception = (index, pool.get_value(index))
+        return (index, pool.get_value(index))
 
 
 class AttributeCode(Attribute):
