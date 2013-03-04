@@ -294,6 +294,17 @@ class AttributeException(Attribute):
     exception_index_table = []
 
 
+class AttributeCode(Attribute):
+    max_stack = 0
+    max_locals = 0
+    code_length = 0
+    code = []
+    exception_table_length = 0
+    exception_table = []
+    attributes_count = 0
+    attributes = []
+
+
 class JavaClass:
     constant_pool = None
     access_flags = 0
