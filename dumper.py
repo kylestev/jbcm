@@ -290,14 +290,8 @@ class AttributeDeprepricated(Attribute):
 
 
 class AttributeException(Attribute):
-    max_stack = 0
-    max_locals = 0
-    code_length = 0
-    code = []
-    exception_table_length = 0
-    exception_table = []
-    attributes_count = 0
-    attributes = []
+    number_of_exceptions = 0
+    exception_index_table = []
 
 
 class JavaClass:
