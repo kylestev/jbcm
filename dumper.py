@@ -259,6 +259,9 @@ class Field:
     def has_access_modifier(self, modifier):
         return (self.flags[modifier] & self.access_flags) != 0
 
+    def __str__(self):
+        return self.name
+
 
 class Attribute:
     attribute_name_index = 0
