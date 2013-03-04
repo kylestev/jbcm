@@ -1,6 +1,7 @@
 from argparse import ArgumentParser
 from sys import exit
 import decimal
+import re
 
 """
 Author:      Kyle Stevenson
@@ -9,6 +10,9 @@ Description: Used to take apart Java class files and parse the bytecode.
              Not sure if this will be used to compile said bytecode back into
              Java source or not but it will be a fun project none the less.
 """
+
+RE_SIG = (r'\((?:\[*(B|C|D|F|I|J|S|Z|(?:L[a-zA-Z]+(?:/[a-zA-Z/<>]*)))+;?)*\)'
+          '\[*(B|C|D|F|I|J|S|V|Z|(?:L[a-zA-Z]+(?:/[a-zA-Z/<>]*)));?')
 
 
 class Bytecode:
