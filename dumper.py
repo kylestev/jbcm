@@ -297,6 +297,9 @@ class TabledAttribute(Attribute):
     table_length = 0
     table = []
 
+    def parse(self, reader, pool):
+        self.parse_table(reader)
+
     def parse_table(self, reader):
         table_length = reader.read_short()
 
@@ -555,6 +558,8 @@ class ClassParser:
                                      pool.get_value(exception_index_table))
 
                         attr.exception_index_table.append(exception)
+
+                attr.parse(self.reader, pool)
 
                 m.attributes.append(m)
 
