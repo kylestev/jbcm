@@ -325,15 +325,8 @@ class JavaClass:
 
 
 class ClassParser:
-    jdk_versions = {
-        51: 'JDK 7',
-        50: 'JDK 6',
-        49: 'JDK 5',
-        48: 'JDK 1.4',
-        47: 'JDK 1.3',
-        46: 'JDK 1.2',
-        45: 'JDK 1.1'
-    }
+    jdk_versions = {51: 'JDK 7', 50: 'JDK 6', 49: 'JDK 5', 48: 'JDK 1.4',
+                    47: 'JDK 1.3', 46: 'JDK 1.2', 45: 'JDK 1.1'}
 
     def __init__(self, file):
         self.file = file
