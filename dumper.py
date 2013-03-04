@@ -295,6 +295,7 @@ class JavaClass:
     superclass_name = ''
     class_name = ''
     fields = []
+    methods = []
     version = {'major': 0, 'minor': 0}
     flags = {'public': 0x01, 'private': 0x02, 'protected': 0x04,
              'static': 0x08, 'final': 0x10, 'volatile': 0x40,
@@ -341,6 +342,9 @@ class JavaClass:
 
     def get_fields(self):
         return self.fields
+
+    def get_methods(self):
+        return self.methods
 
 
 class ClassParser:
@@ -474,6 +478,30 @@ class ClassParser:
                 field.attributes.append(attr)
 
             clazz.add_field(field)
+
+    def read_methods(self, clazz, pool):
+        size = self.reader.read_short()
+
+        for i in range(size):
+            m = Method()
+            m.access_flags = self.reader.read_short()
+            m.name_index = self.reader.read_short()
+            m.attributes_count = self.read_short()
+
+            for i in range(m.attributes_count):
+                name_index = self.reader.read_short()
+                attribute_name = pool.get_value(name_index)
+
+                if attribute_name == 'ConstantValue':
+                    attr = AttributeConstantValue()
+                elif attribute_name == 'Synthetic':
+                    attr = AttributeSynthetic()
+                elif attribute_name == 'Deprecated':
+                    attr = AttributeDeprepricated()
+
+                m.attributes.append(m)
+
+            clazz.add_method(m)
 
 
 class Reader:
