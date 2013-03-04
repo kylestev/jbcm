@@ -70,8 +70,8 @@ class Bytecode:
         for k in op_codes:
             if op == op_codes[k]:
                 return op
-
-        return ''
+        else:
+            return ''
 
     def get_op_code(name):
         return op_codes[name]
