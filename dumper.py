@@ -281,6 +281,20 @@ class Method(JavaClassMember):
              'native': 0x0100, 'abstract': 0x0400, 'strict': 0x0800}
 
 
+class Table:
+    table_length = 0
+    table = []
+
+    def parse_table(self, reader, pool):
+        table_length = reader.read_short()
+
+        for i in range(table_length):
+            self.table.append(self.parse_entry(reader))
+
+    def parse_entry(self, reader):
+        return None
+
+
 class Attribute:
     name_index = 0
     attribute_length = 0
@@ -302,21 +316,9 @@ class Attribute:
         self.attribute_length = name['length']
 
 
-class TabledAttribute(Attribute):
-    table_length = 0
-    table = []
-
+class TabledAttribute(Attribute, Table):
     def parse(self, reader, pool):
         self.parse_table(reader, pool)
-
-    def parse_table(self, reader, pool):
-        table_length = reader.read_short()
-
-        for i in range(table_length):
-            self.table.append(self.parse_entry(reader))
-
-    def parse_entry(self, reader):
-        return None
 
 
 class AttributeConstantValue(Attribute):
