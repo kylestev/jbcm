@@ -240,7 +240,7 @@ class ConstantPool:
             return self.pool[index].get_value()
 
 
-class Field:
+class JavaClassMember:
     access_flags = 0
     name_index = 0
     name = None
@@ -248,6 +248,12 @@ class Field:
     descriptor = None
     attributes_count = 0
     attributes = []
+
+    def __str__(self):
+        return self.name
+
+
+class Field(JavaClassMember):
     flags = {'public': 0x01, 'private': 0x02, 'protected': 0x04,
              'static': 0x08, 'final': 0x10, 'volatile': 0x40,
              'transient': 0x80}
@@ -259,18 +265,9 @@ class Field:
     def has_access_modifier(self, modifier):
         return (self.flags[modifier] & self.access_flags) != 0
 
-    def __str__(self):
-        return self.name
 
-
-class Method:
-    access_flags = 0
-    name_index = 0
-    name = None
-    descriptor_index = 0
-    descriptor = None
-    attributes_count = 0
-    attributes = []
+class Method(JavaClassMember):
+    """"""
 
 
 class Attribute:
