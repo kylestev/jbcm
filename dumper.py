@@ -294,13 +294,13 @@ class Attribute:
 
 
 class TabledAttribute(Attribute):
-    length = 0
+    table_length = 0
     table = []
 
     def parse_table(self, reader):
-        length = reader.read_short()
+        table_length = reader.read_short()
 
-        for i in range(length):
+        for i in range(table_length):
             self.table.append(self.parse_entry(reader))
 
     def parse_entry(self, reader):
