@@ -263,6 +263,16 @@ class Field:
         return self.name
 
 
+class Method:
+    access_flags = 0
+    name_index = 0
+    name = None
+    descriptor_index = 0
+    descriptor = None
+    attributes_count = 0
+    attributes = []
+
+
 class Attribute:
     attribute_name_index = 0
     attribute_length = 0
