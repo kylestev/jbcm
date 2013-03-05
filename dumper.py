@@ -552,6 +552,7 @@ class ClassParser:
             m = Method()
             m.access_flags = self.reader.read_short()
             m.name_index = self.reader.read_short()
+            m.descriptor_index = self.reader.read_short()
             m.attributes_count = self.reader.read_short()
 
             for j in range(m.attributes_count):
