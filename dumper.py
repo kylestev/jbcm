@@ -573,7 +573,7 @@ class ClassParser:
 
                 m.attributes.append(m)
 
-            clazz.add_method(m)
+            clazz.methods.append(m)
 
 
 class Reader:
