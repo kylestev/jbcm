@@ -289,9 +289,9 @@ class Table:
         table_length = reader.read_short()
 
         for i in range(table_length):
-            self.table.append(self.parse_entry(reader))
+            self.table.append(self.parse_entry(reader, pool))
 
-    def parse_entry(self, reader):
+    def parse_entry(self, reader, pool):
         return None
 
 
@@ -334,13 +334,13 @@ class AttributeDeprepricated(Attribute):
 
 
 class AttributeException(TabledAttribute):
-    def parse_entry(self, reader):
+    def parse_entry(self, reader, pool):
         index = reader.read_short()
         return (index, pool.get_value(index))
 
 
 class TableLocalVariableTable(Table):
-    def parse_entry(self, reader):
+    def parse_entry(self, reader, pool):
         return {'start_pc': reader.read_short(), 'length': reader.read_short(),
                 'name_index': reader.read_short(), 
                 'index': reader.read_short(),
@@ -348,7 +348,7 @@ class TableLocalVariableTable(Table):
 
 
 class TableLineNumberTable(Table):
-    def parse_entry(self, reader):
+    def parse_entry(self, reader, pool):
         return {'start_pc': reader.read_short(),
                 'line_number': reader.read_short()}
 
