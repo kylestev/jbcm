@@ -440,8 +440,6 @@ class ClassParser:
         clazz.set_jdk_minor_version(self.reader.read_short())
         clazz.set_jdk_major_version(self.reader.read_short())
 
-        print 'SDK Version:', self.jdk_versions[clazz.get_jdk_major_version()]
-
         pool = self.read_constant_pool(clazz)
         clazz.set_constant_pool(pool)
 
@@ -459,8 +457,6 @@ class ClassParser:
         self.read_fields(clazz, pool)
 
         self.read_methods(clazz, pool)
-
-        print self.reader.pos
 
     def read_constant_pool(self, clazz):
         pool = ConstantPool(self.reader.read_short())
