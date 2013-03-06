@@ -9,6 +9,7 @@ from constant_pool import ConstantPool
 """
 Author:      Kyle Stevenson
 Date:        February 6th 2012
+Version:     0.1
 Description: Used to take apart Java class files and parse the bytecode.
              Not sure if this will be used to compile said bytecode back into
              Java source or not but it will be a fun project none the less.
