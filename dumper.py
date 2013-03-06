@@ -352,6 +352,7 @@ class TableLineNumberTable(Table):
         return {'start_pc': reader.read_short(),
                 'line_number': reader.read_short()}
 
+
 class AttributeSignature(Attribute):
     signature_index = 0
 
