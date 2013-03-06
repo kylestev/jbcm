@@ -360,6 +360,13 @@ class AttributeSignature(Attribute):
         signature_index = reader.read_short()
 
 
+class AttributeSourceFile(Attribute):
+    source_file_index = 0
+
+    def parse(self, reader, pool):
+        source_file_index = reader.read_short()
+
+
 class TableInnerClasses(TabledAttribute):
     def parse_entry(self, reader, pool):
         return {'inner_class_info_index': reader.read_short(),
