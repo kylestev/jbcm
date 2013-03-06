@@ -547,7 +547,7 @@ class ClassParser:
             for attr in self.read_attributes(clazz, pool):
                 field.attributes.append(attr)
 
-            clazz.add_field(field)
+            clazz.fields.append(field)
 
     def read_methods(self, clazz, pool):
         size = self.reader.read_short()
