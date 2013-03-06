@@ -93,6 +93,11 @@ class Bytecode:
         return op_codes[name]
 
 
+class Parsable:
+    def parse(self, reader, pool=None):
+        """"""
+
+
 class ConstantItem:
     name = None
     value = None
@@ -260,8 +265,48 @@ class ConstantPool:
 
             print (i, item.name, self.get_value(i))
 
+    def parse(self, reader, pool=None):
+        self.pool.append(None)
 
-class JavaClassMember:
+        for i in range(1, self.size):
+            item = None
+            tag = reader.read_byte()
+
+            if tag == 1:
+                item = ConstantItemUTF8String()
+            elif tag == 3:
+                item = ConstantItemInteger()
+            elif tag == 4:
+                item = ConstantItemFloat()
+            elif tag == 5:
+                item = ConstantItemLong()
+            elif tag == 6:
+                item = ConstantItemDouble()
+            elif tag == 7:
+                item = ConstantItemClassReference()
+            elif tag == 8:
+                item = ConstantItemStringReference()
+            elif tag == 9:
+                item = ConstantItemFieldReference()
+            elif tag == 10:
+                item = ConstantItemMethodReference()
+            elif tag == 11:
+                item = ConstantItemInterfaceMethodReference()
+            elif tag == 12:
+                item = ConstantItemNameTypeDescriptor()
+
+            if not item is None:
+                item.read_data(reader)
+                self.pool.append(item)
+
+                if tag in (5, 6):
+                    self.pool.append(None)
+            else:
+                reader.pos -= 1
+                break
+
+
+class JavaClassMember(Parsable):
     access_flags = 0
     name_index = 0
     name = None
@@ -310,7 +355,7 @@ class Table:
         return None
 
 
-class Attribute:
+class Attribute(Parsable):
     name_index = 0
     attribute_length = 0
     name = None
@@ -513,44 +558,8 @@ class ClassParser:
 
     def read_constant_pool(self, clazz):
         pool = ConstantPool(self.reader.read_short())
-        pool.add(None)
 
-        for i in range(1, pool.size):
-            item = None
-            tag = self.reader.read_byte()
-
-            if tag == 1:
-                item = ConstantItemUTF8String()
-            elif tag == 3:
-                item = ConstantItemInteger()
-            elif tag == 4:
-                item = ConstantItemFloat()
-            elif tag == 5:
-                item = ConstantItemLong()
-            elif tag == 6:
-                item = ConstantItemDouble()
-            elif tag == 7:
-                item = ConstantItemClassReference()
-            elif tag == 8:
-                item = ConstantItemStringReference()
-            elif tag == 9:
-                item = ConstantItemFieldReference()
-            elif tag == 10:
-                item = ConstantItemMethodReference()
-            elif tag == 11:
-                item = ConstantItemInterfaceMethodReference()
-            elif tag == 12:
-                item = ConstantItemNameTypeDescriptor()
-
-            if not item is None:
-                item.read_data(self.reader)
-                pool.add(item)
-
-                if tag in (5, 6):
-                    pool.add(None)
-            else:
-                self.reader.pos -= 1
-                break
+        pool.parse(self.reader)
 
         return pool
 
