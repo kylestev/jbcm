@@ -329,7 +329,7 @@ class JavaClassMember(Parsable):
         self.descriptor_index = reader.read_short()
         self.descriptor = pool.get_value(self.descriptor_index)
         
-        for attr in Attribute.parse_attributes(self.reader, clazz, pool):
+        for attr in Attribute.parse_attributes(reader, pool):
             self.attributes.append(attr)
 
     def __str__(self):
@@ -364,7 +364,7 @@ class Attribute(Parsable):
     name = None
 
     @staticmethod
-    def parse_attributes(reader, clazz, pool):
+    def parse_attributes(reader, pool):
         attrs = []
         size = reader.read_short()
 
@@ -567,39 +567,34 @@ class ClassParser:
         if self.reader.read_int() != 0xCAFEBABE:
             raise Exception('Not a valid Java class file')
 
-        clazz.set_jdk_minor_version(self.reader.read_short())
-        clazz.set_jdk_major_version(self.reader.read_short())
+        clazz.version['minor'] = self.reader.read_short()
+        clazz.version['major'] = self.reader.read_short()
 
-        pool = self.read_constant_pool(clazz)
-        clazz.set_constant_pool(pool)
+        pool = self.parse_constant_pool(clazz)
 
-        access_flags = pool.get_value(self.reader.read_short())
-        clazz.set_access_flags(access_flags)
+        clazz.access_flags = pool.get_value(self.reader.read_short())
 
-        class_name = pool.get_value(self.reader.read_short())
-        clazz.set_class_name(class_name)
+        clazz.class_name = pool.get_value(self.reader.read_short())
 
-        superclass_name = pool.get_value(self.reader.read_short())
-        clazz.set_superclass_name(superclass_name)
+        clazz.superclass_name = pool.get_value(self.reader.read_short())
 
-        self.read_interface_table(clazz)
+        clazz.interfaces = self.parse_interface_table(clazz)
 
-        self.read_fields(clazz, pool)
+        clazz.fields = self.parse_fields(clazz, pool)
 
-        self.read_methods(clazz, pool)
+        clazz.methods = self.parse_methods(clazz, pool)
 
-        Attribute.parse_attributes(self.reader, clazz, pool)
+        clazz.attributes = Attribute.parse_attributes(self.reader, pool)
 
         return clazz
 
-    def read_constant_pool(self, clazz):
+    def parse_constant_pool(self, clazz):
         pool = ConstantPool(self.reader.read_short())
-
         pool.parse(self.reader)
 
         return pool
 
-    def read_interface_table(self, clazz):
+    def parse_interface_table(self, clazz):
         size = self.reader.read_short()
 
         for i in range(size):
@@ -607,21 +602,27 @@ class ClassParser:
 
         return None
 
-    def read_fields(self, clazz, pool):
+    def parse_fields(self, clazz, pool):
+        fields = []
         size = self.reader.read_short()
 
         for i in range(size):
             field = Field()
             field.parse(self.reader, pool)
-            clazz.fields.append(field)
+            fields.append(field)
 
-    def read_methods(self, clazz, pool):
+        return fields
+
+    def parse_methods(self, clazz, pool):
+        methods = []
         size = self.reader.read_short()
 
         for i in range(size):
             m = Method()
             m.parse(self.reader, pool)
-            clazz.methods.append(m)
+            methods.append(m)
+
+        return methods
 
 
 class Reader:
