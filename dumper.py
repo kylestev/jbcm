@@ -596,7 +596,7 @@ class ClassParser:
             elif details['name'] == 'LocalVariableTable':
                 attr = TableLocalVariableTable()
             elif details['name'] == 'Deprecated':
-                attr = AttributeDeprepricated()
+                attr = AttributeDeprecated()
             elif details['name'] == 'Signature':
                 attr = AttributeSignature()
             else:
