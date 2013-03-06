@@ -522,18 +522,18 @@ class ClassParser:
             field.attributes_count = self.reader.read_short()
 
             for j in range(field.attributes_count):
-                attrs = Attribute.parse_attributes(self.reader, pool)
+                details = Attribute.parse_attributes(self.reader, pool)
 
-                if attrs['name'] == 'ConstantValue':
+                if details['name'] == 'ConstantValue':
                     attr = AttributeConstantValue()
-                elif attrs['name'] == 'Synthetic':
+                elif details['name'] == 'Synthetic':
                     attr = AttributeSynthetic()
-                elif attrs['name'] == 'Deprecated':
+                elif details['name'] == 'Deprecated':
                     attr = AttributeDeprepricated()
                 else:
                     attr = Attribute()
 
-                attr.set_attributes(attrs)
+                attr.set_attributes(details)
                 attr.parse(self.reader, pool)
 
                 field.attributes.append(attr)
@@ -551,20 +551,20 @@ class ClassParser:
             m.attributes_count = self.reader.read_short()
 
             for j in range(m.attributes_count):
-                attrs = Attribute.parse_attributes(self.reader, pool)
+                details = Attribute.parse_attributes(self.reader, pool)
 
-                if attrs['name'] == 'ConstantValue':
+                if details['name'] == 'ConstantValue':
                     attr = AttributeConstantValue()
-                elif attrs['name'] == 'Synthetic':
+                elif details['name'] == 'Synthetic':
                     attr = AttributeSynthetic()
-                elif attrs['name'] == 'Deprecated':
+                elif details['name'] == 'Deprecated':
                     attr = AttributeDeprepricated()
-                elif attrs['name'] == 'Exceptions':
+                elif details['name'] == 'Exceptions':
                     attr = AttributeException()
                 else:
                     attr = Attribute()
 
-                attr.set_attributes(attrs)
+                attr.set_attributes(details)
                 attr.parse(self.reader, pool)
 
                 m.attributes.append(m)
