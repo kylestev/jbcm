@@ -361,11 +361,44 @@ class Attribute(Parsable):
     name = None
 
     @staticmethod
-    def parse_attributes(reader, pool):
-        name_index = reader.read_short()
+    def parse_attributes(reader, clazz, pool):
+        attrs = []
+        size = reader.read_short()
 
-        return {'index': name_index, 'name': pool.get_value(name_index),
-                'length': reader.read_int()}
+        for i in range(size):
+            name_index = reader.read_short()
+            details = {'index': name_index, 'name': pool.get_value(name_index),
+                       'length': reader.read_int()}
+
+            if details['name'] == 'ConstantValue':
+                attr = AttributeConstantValue()
+            elif details['name'] == 'Code':
+                attr = AttributeCode()
+            elif details['name'] == 'Exceptions':
+                attr = AttributeException()
+            elif details['name'] == 'InnerClasses':
+                attr = TableInnerClasses()
+            elif details['name'] == 'Synthetic':
+                attr = AttributeSynthetic()
+            elif details['name'] == 'SourceFile':
+                attr = AttributeSourceFile()
+            elif details['name'] == 'LineNumberTable':
+                attr = TableLineNumberTable()
+            elif details['name'] == 'LocalVariableTable':
+                attr = TableLocalVariableTable()
+            elif details['name'] == 'Deprecated':
+                attr = AttributeDeprecated()
+            elif details['name'] == 'Signature':
+                attr = AttributeSignature()
+            else:
+                attr = Attribute()
+
+            attr.set_attributes(details)
+            attr.parse(reader, pool)
+
+            attrs.append(attr)
+
+        return attrs
 
     def parse(self, reader, pool):
         reader.read(self.attribute_length)
@@ -552,7 +585,7 @@ class ClassParser:
 
         self.read_methods(clazz, pool)
 
-        self.read_attributes(clazz, pool)
+        Attribute.parse_attributes(self.reader, clazz, pool)
 
         return clazz
 
@@ -578,7 +611,7 @@ class ClassParser:
             field = Field()
             field.parse(self.reader, pool)
 
-            for attr in self.read_attributes(clazz, pool):
+            for attr in Attribute.parse_attributes(self.reader, clazz, pool):
                 field.attributes.append(attr)
 
             clazz.fields.append(field)
@@ -590,47 +623,10 @@ class ClassParser:
             m = Method()
             m.parse(self.reader, pool)
 
-            for attr in self.read_attributes(clazz, pool):
+            for attr in Attribute.parse_attributes(self.reader, clazz, pool):
                 m.attributes.append(attr)
 
             clazz.methods.append(m)
-
-    def read_attributes(self, clazz, pool):
-        attrs = []
-        size = self.reader.read_short()
-
-        for i in range(size):
-            details = Attribute.parse_attributes(self.reader, pool)
-
-            if details['name'] == 'ConstantValue':
-                attr = AttributeConstantValue()
-            elif details['name'] == 'Code':
-                attr = AttributeCode()
-            elif details['name'] == 'Exceptions':
-                attr = AttributeException()
-            elif details['name'] == 'InnerClasses':
-                attr = TableInnerClasses()
-            elif details['name'] == 'Synthetic':
-                attr = AttributeSynthetic()
-            elif details['name'] == 'SourceFile':
-                attr = AttributeSourceFile()
-            elif details['name'] == 'LineNumberTable':
-                attr = TableLineNumberTable()
-            elif details['name'] == 'LocalVariableTable':
-                attr = TableLocalVariableTable()
-            elif details['name'] == 'Deprecated':
-                attr = AttributeDeprecated()
-            elif details['name'] == 'Signature':
-                attr = AttributeSignature()
-            else:
-                attr = Attribute()
-
-            attr.set_attributes(details)
-            attr.parse(self.reader, pool)
-
-            attrs.append(attr)
-
-        return attrs
 
 
 class Reader:
