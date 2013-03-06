@@ -265,6 +265,13 @@ class JavaClassMember:
     def has_access_modifier(self, modifier):
         return (self.flags[modifier] & self.access_flags) != 0
 
+    def parse(self, reader, pool):
+        self.access_flags = reader.read_short()
+        self.name_index = reader.read_short()
+        self.name = pool.get_value(self.name_index)
+        self.descriptor_index = reader.read_short()
+        self.descriptor = pool.get_value(self.descriptor_index)
+
     def __str__(self):
         return self.name
 
