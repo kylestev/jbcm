@@ -571,6 +571,7 @@ class ClassParser:
         clazz.version['major'] = self.reader.read_short()
 
         pool = self.parse_constant_pool(clazz)
+        clazz.pool = pool
         clazz.access_flags = pool.get_value(self.reader.read_short())
         clazz.class_name = pool.get_value(self.reader.read_short())
         clazz.superclass_name = pool.get_value(self.reader.read_short())
