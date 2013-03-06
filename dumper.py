@@ -150,41 +150,20 @@ class JavaClass:
     def get_jdk_major_version(self):
         return self.version['major']
 
-    def set_jdk_major_version(self, version):
-        self.version['major'] = version
-
     def get_jdk_minor_version(self):
         return self.version['minor']
-
-    def set_jdk_minor_version(self, version):
-        self.version['minor'] = version
 
     def get_superclass_name(self):
         return self.superclass_name
 
-    def set_superclass_name(self, name):
-        self.superclass_name = name
-
     def get_class_name(self):
         return self.class_name
-
-    def set_class_name(self, name):
-        self.class_name = name
-
-    def set_access_flags(self, flags):
-        self.access_flags = flags
 
     def has_modifier(self, modifier):
         return (access_flags & self.flags[modifier]) != 0
 
-    def add_field(self, field):
-        self.fields.append(field)
-
     def get_constant_pool(self):
         return self.constant_pool
-
-    def set_constant_pool(self, pool):
-        self.constant_pool = pool
 
     def get_fields(self):
         return self.fields
