@@ -453,6 +453,23 @@ class JavaClass:
     def get_fields(self):
         return self.fields
 
+    def find_fields(self, *args, **kwargs):
+        found = []
+
+        for k, v in kwargs.items():
+            if k[:3] == 'is_':
+                if k[3:] in FIELD_FLAGS.keys():
+                    for f in self.fields:
+                        if f.has_modifier(k[3:]) == kwargs[k]:
+                            found.append(f)
+            elif k == 'name':
+                for f in self.fields:
+                    if f.name == kwargs[k]:
+                        found.append(f)
+                        break
+
+        return found
+
     def get_methods(self):
         return self.methods
 
@@ -647,7 +664,10 @@ def main(args):
         return 'ERROR: Please pass in a classfile to parse via --classfile'
 
     parser = ClassParser(args.classfile)
-    parser.parse_class()
+    clazz = parser.parse_class()
+
+    for f in clazz.find_fields(is_static=True):
+        print f
 
 if __name__ == '__main__':
     arg_parser = ArgumentParser()
