@@ -545,11 +545,7 @@ class ClassParser:
 
         for i in range(size):
             field = Field()
-            field.access_flags = self.reader.read_short()
-            field.name_index = self.reader.read_short()
-            field.name = pool.get_value(field.name_index)
-            field.descriptor_index = self.reader.read_short()
-            field.descriptor = pool.get_value(field.descriptor_index)
+            field.parse(self.reader, pool)
 
             for attr in self.read_attributes(clazz, pool):
                 field.attributes.append(attr)
@@ -561,9 +557,7 @@ class ClassParser:
 
         for i in range(size):
             m = Method()
-            m.access_flags = self.reader.read_short()
-            m.name_index = self.reader.read_short()
-            m.descriptor_index = self.reader.read_short()
+            m.parse(self.reader, pool)
 
             for attr in self.read_attributes(clazz, pool):
                 m.attributes.append(attr)
