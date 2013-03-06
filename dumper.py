@@ -480,6 +480,8 @@ class ClassParser:
 
         self.read_methods(clazz, pool)
 
+        self.read_attributes(clazz, pool)
+
     def read_constant_pool(self, clazz):
         pool = ConstantPool(self.reader.read_short())
         pool.add(None)
@@ -592,6 +594,44 @@ class ClassParser:
                 m.attributes.append(m)
 
             clazz.methods.append(m)
+
+
+    def read_attributes(self, clazz, pool):
+        attrs = []
+        size = self.reader.read_short()
+
+        for i in range(size):
+            details = Attribute.parse_attributes(self.reader, pool)
+
+            if details['name'] == 'ConstantValue':
+                attr = AttributeConstantValue()
+            elif details['name'] == 'Code':
+                attr = AttributeCode()
+            elif details['name'] == 'Exceptions':
+                attr = AttributeException()
+            elif details['name'] == 'InnerClasses':
+                attr = TableInnerClasses()
+            elif details['name'] == 'Synthetic':
+                attr = AttributeSynthetic()
+            elif details['name'] == 'SourceFile':
+                attr = AttributeSourceFile()
+            elif details['name'] == 'LineNumberTable':
+                attr = TableLineNumberTable()
+            elif details['name'] == 'LocalVariableTable':
+                attr = TableLocalVariableTable()
+            elif details['name'] == 'Deprecated':
+                attr = AttributeDeprepricated()
+            elif details['name'] == 'Signature':
+                attr = AttributeSignature()
+            else:
+                attr = Attribute()
+
+            attr.set_attributes(details)
+            attr.parse(self.reader, pool)
+
+            attrs.append(attr)
+
+        return attrs
 
 
 class Reader:
