@@ -360,6 +360,14 @@ class AttributeSignature(Attribute):
         signature_index = reader.read_short()
 
 
+class TableInnerClasses(TabledAttribute):
+    def parse_entry(self, reader, pool):
+        return {'inner_class_info_index': reader.read_short(),
+                'outer_class_info_index': reader.read_short(),
+                'inner_name_index': reader.read_short(),
+                'inner_class_access_flags': reader.read_short()}
+
+
 class AttributeCode(Attribute):
     max_stack = 0
     max_locals = 0
