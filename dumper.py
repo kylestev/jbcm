@@ -257,9 +257,8 @@ class ClassParser:
 
     def parse_fields(self, clazz, pool):
         fields = []
-        size = self.reader.read_short()
 
-        for i in range(size):
+        for i in range(self.reader.read_short()):
             field = Field()
             field.parse(self.reader, pool)
             fields.append(field)
@@ -268,9 +267,8 @@ class ClassParser:
 
     def parse_methods(self, clazz, pool):
         methods = []
-        size = self.reader.read_short()
 
-        for i in range(size):
+        for i in range(self.reader.read_short()):
             m = Method()
             m.parse(self.reader, pool)
             methods.append(m)
