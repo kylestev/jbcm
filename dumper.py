@@ -342,7 +342,7 @@ class AttributeException(TabledAttribute):
 class TableLocalVariableTable(Table):
     def parse_entry(self, reader, pool):
         return {'start_pc': reader.read_short(), 'length': reader.read_short(),
-                'name_index': reader.read_short(), 
+                'name_index': reader.read_short(),
                 'index': reader.read_short(),
                 'descriptor_index': reader.read_short()}
 
