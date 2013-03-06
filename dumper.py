@@ -329,7 +329,7 @@ class AttributeSynthetic(Attribute):
     """"""
 
 
-class AttributeDeprepricated(Attribute):
+class AttributeDeprecated(Attribute):
     """"""
 
 
@@ -535,7 +535,7 @@ class ClassParser:
                 elif details['name'] == 'Synthetic':
                     attr = AttributeSynthetic()
                 elif details['name'] == 'Deprecated':
-                    attr = AttributeDeprepricated()
+                    attr = AttributeDeprecated()
                 else:
                     attr = Attribute()
 
@@ -564,7 +564,7 @@ class ClassParser:
                 elif details['name'] == 'Synthetic':
                     attr = AttributeSynthetic()
                 elif details['name'] == 'Deprecated':
-                    attr = AttributeDeprepricated()
+                    attr = AttributeDeprecated()
                 elif details['name'] == 'Exceptions':
                     attr = AttributeException()
                 else:
