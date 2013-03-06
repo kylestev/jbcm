@@ -563,7 +563,6 @@ class ClassParser:
 
             clazz.methods.append(m)
 
-
     def read_attributes(self, clazz, pool):
         attrs = []
         size = self.reader.read_short()
