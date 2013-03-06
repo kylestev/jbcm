@@ -539,10 +539,12 @@ class JavaClass:
 
         for k, v in kwargs.items():
             if k[:3] == 'is_':
-                if k[3:] in FIELD_FLAGS.keys():
-                    for f in self.fields:
-                        if f.has_modifier(k[3:]) == kwargs[k]:
-                            found.append(f)
+                if not k[3:] in FIELD_FLAGS.keys():
+                    continue
+                    
+                for f in self.fields:
+                    if f.has_modifier(k[3:]) == kwargs[k]:
+                        found.append(f)
             elif k == 'name':
                 for f in self.fields:
                     if f.name == kwargs[k]:
