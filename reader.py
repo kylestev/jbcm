@@ -26,6 +26,9 @@ class Reader:
         return (self.read_short() << 16) + self.read_short()
 
     def read_long(self):
+        """
+        Reads a long, or eight bytes, from the buffer
+        """
         return (self.read_int() << 32) + self.read_int()
 
     def read(self, length):
