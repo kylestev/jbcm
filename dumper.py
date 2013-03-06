@@ -543,23 +543,8 @@ class ClassParser:
             field.name = pool.get_value(field.name_index)
             field.descriptor_index = self.reader.read_short()
             field.descriptor = pool.get_value(field.descriptor_index)
-            field.attributes_count = self.reader.read_short()
 
-            for j in range(field.attributes_count):
-                details = Attribute.parse_attributes(self.reader, pool)
-
-                if details['name'] == 'ConstantValue':
-                    attr = AttributeConstantValue()
-                elif details['name'] == 'Synthetic':
-                    attr = AttributeSynthetic()
-                elif details['name'] == 'Deprecated':
-                    attr = AttributeDeprecated()
-                else:
-                    attr = Attribute()
-
-                attr.set_attributes(details)
-                attr.parse(self.reader, pool)
-
+            for attr in self.read_attributes(clazz, pool):
                 field.attributes.append(attr)
 
             clazz.add_field(field)
@@ -572,26 +557,9 @@ class ClassParser:
             m.access_flags = self.reader.read_short()
             m.name_index = self.reader.read_short()
             m.descriptor_index = self.reader.read_short()
-            m.attributes_count = self.reader.read_short()
 
-            for j in range(m.attributes_count):
-                details = Attribute.parse_attributes(self.reader, pool)
-
-                if details['name'] == 'ConstantValue':
-                    attr = AttributeConstantValue()
-                elif details['name'] == 'Synthetic':
-                    attr = AttributeSynthetic()
-                elif details['name'] == 'Deprecated':
-                    attr = AttributeDeprecated()
-                elif details['name'] == 'Exceptions':
-                    attr = AttributeException()
-                else:
-                    attr = Attribute()
-
-                attr.set_attributes(details)
-                attr.parse(self.reader, pool)
-
-                m.attributes.append(m)
+            for attr in self.read_attributes(clazz, pool):
+                m.attributes.append(attr)
 
             clazz.methods.append(m)
 
