@@ -14,6 +14,18 @@ Description: Used to take apart Java class files and parse the bytecode.
 RE_SIG = (r'\((?:\[*(B|C|D|F|I|J|S|Z|(?:L[a-zA-Z]+(?:/[a-zA-Z/<>]*)))+;?)*\)'
           '\[*(B|C|D|F|I|J|S|V|Z|(?:L[a-zA-Z]+(?:/[a-zA-Z/<>]*)));?')
 
+CLASS_FLAGS = {'public': 0x01, 'private': 0x02, 'protected': 0x04,
+               'static': 0x08, 'final': 0x10, 'volatile': 0x40,
+               'transient': 0x80}
+
+FIELD_FLAGS = {'public': 0x01, 'private': 0x02, 'protected': 0x04,
+               'static': 0x08, 'final': 0x10, 'volatile': 0x40,
+               'transient': 0x80}
+
+METHOD_FLAGS = {'public': 0x01, 'private': 0x02, 'protected': 0x04,
+                'static': 0x08, 'final': 0x10, 'synchronized': 0x20,
+                'native': 0x0100, 'abstract': 0x0400, 'strict': 0x0800}
+
 
 class Bytecode:
     op_codes = {
@@ -277,15 +289,11 @@ class JavaClassMember:
 
 
 class Field(JavaClassMember):
-    flags = {'public': 0x01, 'private': 0x02, 'protected': 0x04,
-             'static': 0x08, 'final': 0x10, 'volatile': 0x40,
-             'transient': 0x80}
+    flags = FIELD_FLAGS
 
 
 class Method(JavaClassMember):
-    flags = {'public': 0x01, 'private': 0x02, 'protected': 0x04,
-             'static': 0x08, 'final': 0x10, 'synchronized': 0x20,
-             'native': 0x0100, 'abstract': 0x0400, 'strict': 0x0800}
+    flags = METHOD_FLAGS
 
 
 class Table:
@@ -401,9 +409,7 @@ class JavaClass:
     fields = []
     methods = []
     version = {'major': 0, 'minor': 0}
-    flags = {'public': 0x01, 'private': 0x02, 'protected': 0x04,
-             'static': 0x08, 'final': 0x10, 'volatile': 0x40,
-             'transient': 0x80}
+    flags = CLASS_FLAGS
 
     def get_jdk_major_version(self):
         return self.version['major']
