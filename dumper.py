@@ -462,7 +462,6 @@ class ClassParser:
         pool = ConstantPool(self.reader.read_short())
         pool.add(None)
 
-        # Parse Constant Pool
         for i in range(1, pool.size):
             item = None
             tag = self.reader.read_byte()
