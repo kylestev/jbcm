@@ -495,6 +495,8 @@ class ClassParser:
 
         self.read_attributes(clazz, pool)
 
+        return clazz
+
     def read_constant_pool(self, clazz):
         pool = ConstantPool(self.reader.read_short())
         pool.add(None)
