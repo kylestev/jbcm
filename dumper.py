@@ -2,6 +2,8 @@ from argparse import ArgumentParser
 from sys import exit
 import decimal
 import re
+from reader import Reader
+from attributes import (Parsable, Attribute)
 
 """
 Author:      Kyle Stevenson
@@ -91,11 +93,6 @@ class Bytecode:
 
     def get_op_code(name):
         return op_codes[name]
-
-
-class Parsable:
-    def parse(self, reader, pool=None):
-        """"""
 
 
 class ConstantItem:
@@ -328,7 +325,7 @@ class JavaClassMember(Parsable):
         self.name = pool.get_value(self.name_index)
         self.descriptor_index = reader.read_short()
         self.descriptor = pool.get_value(self.descriptor_index)
-        
+
         for attr in Attribute.parse_attributes(reader, pool):
             self.attributes.append(attr)
 
@@ -342,144 +339,6 @@ class Field(JavaClassMember):
 
 class Method(JavaClassMember):
     flags = METHOD_FLAGS
-
-
-class Table:
-    table_length = 0
-    table = []
-
-    def parse_table(self, reader, pool):
-        table_length = reader.read_short()
-
-        for i in range(table_length):
-            self.table.append(self.parse_entry(reader, pool))
-
-    def parse_entry(self, reader, pool):
-        return None
-
-
-class Attribute(Parsable):
-    name_index = 0
-    attribute_length = 0
-    name = None
-
-    @staticmethod
-    def parse_attributes(reader, pool):
-        attrs = []
-        size = reader.read_short()
-
-        for i in range(size):
-            name_index = reader.read_short()
-            details = {'index': name_index, 'name': pool.get_value(name_index),
-                       'length': reader.read_int()}
-
-            if details['name'] == 'ConstantValue':
-                attr = AttributeConstantValue()
-            elif details['name'] == 'Code':
-                attr = AttributeCode()
-            elif details['name'] == 'Exceptions':
-                attr = AttributeException()
-            elif details['name'] == 'InnerClasses':
-                attr = TableInnerClasses()
-            elif details['name'] == 'Synthetic':
-                attr = AttributeSynthetic()
-            elif details['name'] == 'SourceFile':
-                attr = AttributeSourceFile()
-            elif details['name'] == 'LineNumberTable':
-                attr = TableLineNumberTable()
-            elif details['name'] == 'LocalVariableTable':
-                attr = TableLocalVariableTable()
-            elif details['name'] == 'Deprecated':
-                attr = AttributeDeprecated()
-            elif details['name'] == 'Signature':
-                attr = AttributeSignature()
-            else:
-                attr = Attribute()
-
-            attr.set_attributes(details)
-            attr.parse(reader, pool)
-
-            attrs.append(attr)
-
-        return attrs
-
-    def parse(self, reader, pool):
-        reader.read(self.attribute_length)
-
-    def set_attributes(self, name):
-        self.name_index = name['index']
-        self.name = name['name']
-        self.attribute_length = name['length']
-
-
-class TabledAttribute(Attribute, Table):
-    def parse(self, reader, pool):
-        self.parse_table(reader, pool)
-
-
-class AttributeConstantValue(Attribute):
-    constantvalue_index = 0
-
-
-class AttributeSynthetic(Attribute):
-    """"""
-
-
-class AttributeDeprecated(Attribute):
-    """"""
-
-
-class AttributeException(TabledAttribute):
-    def parse_entry(self, reader, pool):
-        index = reader.read_short()
-        return (index, pool.get_value(index))
-
-
-class TableLocalVariableTable(TabledAttribute):
-    def parse_entry(self, reader, pool):
-        return {'start_pc': reader.read_short(), 'length': reader.read_short(),
-                'name_index': reader.read_short(),
-                'index': reader.read_short(),
-                'descriptor_index': reader.read_short()}
-
-
-class TableLineNumberTable(TabledAttribute):
-    def parse_entry(self, reader, pool):
-        return {'start_pc': reader.read_short(),
-                'line_number': reader.read_short()}
-
-
-class AttributeSignature(Attribute):
-    signature_index = 0
-
-    def parse(self, reader, pool):
-        signature_index = reader.read_short()
-
-
-class AttributeSourceFile(Attribute):
-    source_file_index = 0
-
-    def parse(self, reader, pool):
-        source_file_index = reader.read_short()
-
-
-class TableInnerClasses(TabledAttribute):
-    def parse_entry(self, reader, pool):
-        return {'inner_class_info_index': reader.read_short(),
-                'outer_class_info_index': reader.read_short(),
-                'inner_name_index': reader.read_short(),
-                'inner_class_access_flags': reader.read_short()}
-
-
-class AttributeCode(Attribute):
-    max_stack = 0
-    max_locals = 0
-    code_length = 0
-    code = []
-    exception_table_length = 0
-    exception_table = []
-    attributes_count = 0
-    attributes = []
 
 
 class JavaClass:
@@ -541,7 +400,7 @@ class JavaClass:
             if k[:3] == 'is_':
                 if not k[3:] in FIELD_FLAGS.keys():
                     continue
-                    
+
                 for f in self.fields:
                     if f.has_modifier(k[3:]) == kwargs[k]:
                         found.append(f)
@@ -550,6 +409,10 @@ class JavaClass:
                     if f.name == kwargs[k]:
                         found.append(f)
                         break
+            elif k in ['descriptor', 'type']:
+                for f in self.fields:
+                    if f.descriptor == kwargs[k]:
+                        found.append(f)
 
         return found
 
@@ -621,38 +484,6 @@ class ClassParser:
         return methods
 
 
-class Reader:
-    pos = -1
-    buff = None
-    pool = None
-
-    def read_byte(self):
-        self.pos += 1
-        return ord(self.buff[self.pos])
-
-    def read_short(self):
-        return (self.read_byte() << 8) + self.read_byte()
-
-    def read_int(self):
-        return (self.read_short() << 16) + self.read_short()
-
-    def read_long(self):
-        return (self.read_int() << 32) + self.read_int()
-
-    def read(self, length):
-        b = []
-
-        for i in range(length):
-            self.pos += 1
-            b.append(self.buff[self.pos])
-
-        return b
-
-    def load_class(self, file):
-        with open(file, 'rb') as f:
-            self.buff = f.read()
-
-
 def main(args):
     if args.classfile is None:
         return 'ERROR: Please pass in a classfile to parse via --classfile'
@@ -660,7 +491,7 @@ def main(args):
     parser = ClassParser(args.classfile)
     clazz = parser.parse_class()
 
-    for f in clazz.find_fields(is_static=True):
+    for f in clazz.find_fields(is_static=True, type='I'):
         print f
 
 if __name__ == '__main__':
