@@ -274,7 +274,7 @@ class JavaClassMember:
         af = self.access_flags
         return [f for f in self.flags if (af & self.flags[f]) != 0]
 
-    def has_access_modifier(self, modifier):
+    def has_modifier(self, modifier):
         return (self.flags[modifier] & self.access_flags) != 0
 
     def parse(self, reader, pool):
@@ -438,7 +438,7 @@ class JavaClass:
     def set_access_flags(self, flags):
         self.access_flags = flags
 
-    def has_access_modifier(self, modifier):
+    def has_modifier(self, modifier):
         return (access_flags & self.flags[modifier]) != 0
 
     def add_field(self, field):
