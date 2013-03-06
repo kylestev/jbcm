@@ -328,6 +328,9 @@ class JavaClassMember(Parsable):
         self.name = pool.get_value(self.name_index)
         self.descriptor_index = reader.read_short()
         self.descriptor = pool.get_value(self.descriptor_index)
+        
+        for attr in Attribute.parse_attributes(self.reader, clazz, pool):
+            self.attributes.append(attr)
 
     def __str__(self):
         return self.name
@@ -610,10 +613,6 @@ class ClassParser:
         for i in range(size):
             field = Field()
             field.parse(self.reader, pool)
-
-            for attr in Attribute.parse_attributes(self.reader, clazz, pool):
-                field.attributes.append(attr)
-
             clazz.fields.append(field)
 
     def read_methods(self, clazz, pool):
@@ -622,10 +621,6 @@ class ClassParser:
         for i in range(size):
             m = Method()
             m.parse(self.reader, pool)
-
-            for attr in Attribute.parse_attributes(self.reader, clazz, pool):
-                m.attributes.append(attr)
-
             clazz.methods.append(m)
 
 
