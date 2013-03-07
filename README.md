@@ -1,4 +1,4 @@
-java-decompyler
+Java Bytecode Manipulator
 ===============
 
 This library is for parsing and manipulating Java classfiles similar to the Bytecode Engineering Library https://commons.apache.org/proper/commons-bcel/
