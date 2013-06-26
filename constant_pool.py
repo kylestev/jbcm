@@ -160,7 +160,7 @@ class ConstantPool:
             return self.pool[index].get_value()
 
     def print_pool(self):
-        for i in range(1, self.size):
+        for i in xrange(1, self.size):
             item = self.get(i)
 
             if item is None:
